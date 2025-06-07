@@ -14,6 +14,8 @@ void main()
 	FillRand(arr, n);
 	Print(arr, n);
 
+	delete[] arr;
+	//Memory leak - утечка памяти
 }
 
 void FillRand(int arr[], const int n)
