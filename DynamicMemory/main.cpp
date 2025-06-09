@@ -1,4 +1,4 @@
-//DynamicMemory
+п»ї//DynamicMemory
 #include <iostream>
 using namespace std;
 
@@ -14,42 +14,42 @@ void main()
 {
 	setlocale(LC_ALL, "");
 	int n;
-	cout << "Введите размер массива: "; cin >> n;
-	int* arr = new int[n]; //Объявление динамического массива
+	cout << "Р’РІРµРґРёС‚Рµ СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР°: "; cin >> n;
+	int* arr = new int[n]; //РћР±СЉСЏРІР»РµРЅРёРµ РґРёРЅР°РјРёС‡РµСЃРєРѕРіРѕ РјР°СЃСЃРёРІР°
 	FillRand(arr, n);
 	Print(arr, n);
 	int value, index;
-	cout << "Введите добавляемое значение: "; cin >> value;
-	cout << "Введите индекс: "; cin >> index;
+	cout << "Р’РІРµРґРёС‚Рµ РґРѕР±Р°РІР»СЏРµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ: "; cin >> value;
+	cout << "Р’РІРµРґРёС‚Рµ РёРЅРґРµРєСЃ: "; cin >> index;
 	arr = Insert(arr, n, value, index);
-	cout << "Добавили по индексу" << endl;
+	cout << "Р”РѕР±Р°РІРёР»Рё РїРѕ РёРЅРґРµРєСЃСѓ" << endl;
 	Print(arr, n);
 		
 	arr = PushBack(arr, n, value);
-	cout << "Добавили в конец" << endl;
+	cout << "Р”РѕР±Р°РІРёР»Рё РІ РєРѕРЅРµС†" << endl;
 	Print(arr, n);
 
 	arr = PushFront(arr, n, value);
-	cout << "Добавили в начало" << endl;
+	cout << "Р”РѕР±Р°РІРёР»Рё РІ РЅР°С‡Р°Р»Рѕ" << endl;
 	Print(arr, n);
 
 	arr = PopBack(arr, n);
-	cout << "Удалили с конца" << endl;
+	cout << "РЈРґР°Р»РёР»Рё СЃ РєРѕРЅС†Р°" << endl;
 	Print(arr, n);
 
 	arr = PopFront(arr, n);
-	cout << "Удалили сначала" << endl;
+	cout << "РЈРґР°Р»РёР»Рё СЃРЅР°С‡Р°Р»Р°" << endl;
 	Print(arr, n);
 
 	delete[] arr;
-	//Memory leak - утечка памяти
+	//Memory leak - СѓС‚РµС‡РєР° РїР°РјСЏС‚Рё
 }
 
 void FillRand(int arr[], const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
-		*(arr + i) = rand() % 100; //Через арифметику указателей и оператор разыменования
+		*(arr + i) = rand() % 100; //Р§РµСЂРµР· Р°СЂРёС„РјРµС‚РёРєСѓ СѓРєР°Р·Р°С‚РµР»РµР№ Рё РѕРїРµСЂР°С‚РѕСЂ СЂР°Р·С‹РјРµРЅРѕРІР°РЅРёСЏ
 	}
 
 }
@@ -59,7 +59,7 @@ void Print(int arr[], const int n)
 	//cout << *arr << endl;
 	for (int i = 0; i < n; i++)
 	{
-		cout << arr[i] << "\t"; //Через оператор индексирования (subscript operator)
+		cout << arr[i] << "\t"; //Р§РµСЂРµР· РѕРїРµСЂР°С‚РѕСЂ РёРЅРґРµРєСЃРёСЂРѕРІР°РЅРёСЏ (subscript operator)
 	}
 	cout << endl;
 }
