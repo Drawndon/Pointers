@@ -7,6 +7,7 @@ void Print(int arr[], const int n);
 int* PushBack(int arr[], int &n, int value);
 int* PushFront(int arr[], int &n, int value);
 int* Insert(int arr[], int &n, int value, int index);
+int* Erase(int arr[], int& n, int index);
 int* PopBack(int arr[], int& n);
 int* PopFront(int arr[], int& n);
 
@@ -18,27 +19,31 @@ void main()
 	int* arr = new int[n]; //Объявление динамического массива
 	FillRand(arr, n);
 	Print(arr, n);
-	int value, index;
+	int value, index = -1;
 	cout << "Введите добавляемое значение: "; cin >> value;
-	cout << "Введите индекс: "; cin >> index;
+	cout << "Введите индекс не больше " << n << " и не меньше " << 0 << endl; while (index > n || index < 0) cin >> index;
 	arr = Insert(arr, n, value, index);
-	cout << "Добавили по индексу" << endl;
+	cout << endl << "Добавили по индексу " << index << " значение " << value << endl;
 	Print(arr, n);
 		
 	arr = PushBack(arr, n, value);
-	cout << "Добавили в конец" << endl;
+	cout << endl << "Добавили в конец " << value << endl;
 	Print(arr, n);
 
 	arr = PushFront(arr, n, value);
-	cout << "Добавили в начало" << endl;
+	cout << endl << "Добавили в начало " << value << endl;
 	Print(arr, n);
 
 	arr = PopBack(arr, n);
-	cout << "Удалили с конца" << endl;
+	cout << endl << "Удалили с конца "<< value << endl;
 	Print(arr, n);
 
 	arr = PopFront(arr, n);
-	cout << "Удалили сначала" << endl;
+	cout << endl << "Удалили сначала "<< value << endl;
+	Print(arr, n);
+
+	arr = Erase(arr, n, index);
+	cout << endl << "Удалили элемент по индексу " << index << endl;
 	Print(arr, n);
 
 	delete[] arr;
@@ -57,6 +62,7 @@ void Print(int arr[], const int n)
 {
 	//cout << arr << endl;
 	//cout << *arr << endl;
+	
 	for (int i = 0; i < n; i++)
 	{
 		cout << arr[i] << "\t"; //Через оператор индексирования (subscript operator)
@@ -101,6 +107,16 @@ int* Insert(int arr[], int& n, int value, int index)
 	n++;
 	return buffer;
 }
+
+int* Erase(int arr[], int& n, int index)
+{
+	int* buffer = new int[--n];
+	for (int i = 0; i < n; i++)
+		buffer[i] = arr[i < index ? i : i + 1];
+	delete[] arr;
+	return buffer;
+}
+
 int* PopBack(int arr[], int& n)
 {
 	int *buffer = new int[--n];
