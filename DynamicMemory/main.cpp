@@ -1,19 +1,35 @@
 ﻿//DynamicMemory
 #include <iostream>
 using namespace std;
+using std::cin;
+using std::cout;
 
-void FillRand(int arr[], const int n);
+void FillRand(int arr[], const int n, int minRand = 0, int maxRand = 100);
+void FillRand(int** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
 void Print(int arr[], const int n);
+void Print(int** arr, const int rows, const int cols);
+
 int* PushBack(int arr[], int &n, int value);
 int* PushFront(int arr[], int &n, int value);
+
 int* Insert(int arr[], int &n, int value, int index);
 int* Erase(int arr[], int& n, int index);
+
 int* PopBack(int arr[], int& n);
 int* PopFront(int arr[], int& n);
+
+int** PushRowBack(int** arr, int& rows, const int cols);
+
+void PushColBack(int** arr, const int rows, int& cols);
+
+//#define DYNAMIC_MEMORY_1
+#define DYNAMIC_MEMORY_2
 
 void main()
 {
 	setlocale(LC_ALL, "");
+#ifdef DYNAMIC_MEMORY_1
+
 	int n;
 	cout << "Введите размер массива: "; cin >> n;
 	int* arr = new int[n]; //Объявление динамического массива
@@ -48,16 +64,71 @@ void main()
 
 	delete[] arr;
 	//Memory leak - утечка памяти
+#endif // DYNAMIC_MEMORY_1
+
+
+#ifdef DYNAMIC_MEMORY_2
+	int rows;
+	int cols;
+	cout << "Введите количество строк: "; cin >> rows;
+	cout << "Введите количество элементов строки: "; cin >> cols;
+
+
+
+	//1) Создаем массив указателей
+	int** arr = new int* [rows];
+	
+	
+	//2) Выделяем память под строки
+	for (int i = 0; i < rows; i++)
+	{
+		arr[i] = new int[cols];
+	}
+
+	FillRand(arr, rows, cols);
+	Print(arr, rows, cols);
+
+	arr = PushRowBack(arr, rows, cols);
+	FillRand(arr[rows - 1], cols, 100, 1000);
+	Print(arr, rows, cols);
+	PushColBack(arr, rows, cols);
+	//Заполняем последний добавленный столбец случайными числами
+	for (int i = 0; i < rows; i++)
+		arr[i][cols - 1] = rand() % 100;
+	Print(arr, rows, cols);
+
+	//1) Удаляются строки
+	for (int i = 0; i < rows; i++)
+	{
+		delete[] arr[i];
+	}
+
+	//2) Теперь можно удалить массив указателей
+	delete[] arr;
+
+#endif // DYNAMIC_MEMORY_2
+
 }
 
-void FillRand(int arr[], const int n)
+void FillRand(int arr[], const int n, int minRand, int maxRand)
 {
 	for (int i = 0; i < n; i++)
 	{
-		*(arr + i) = rand() % 100; //Через арифметику указателей и оператор разыменования
+		*(arr + i) = rand() % (maxRand - minRand) + minRand; //Через арифметику указателей и оператор разыменования
 	}
 
 }
+void FillRand(int** arr, const int rows, const int cols, int minRand, int maxRand)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			arr[i][j] = rand() % (maxRand - minRand) + minRand;
+		}
+	}
+}
+
 void Print(int arr[], const int n)
 {
 	//cout << arr << endl;
@@ -66,6 +137,19 @@ void Print(int arr[], const int n)
 	for (int i = 0; i < n; i++)
 	{
 		cout << arr[i] << "\t"; //Через оператор индексирования (subscript operator)
+	}
+	cout << endl;
+}
+
+void Print(int** arr, const int rows, const int cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			cout << arr[i][j] << "\t";
+		}
+		cout << endl;
 	}
 	cout << endl;
 }
@@ -132,4 +216,35 @@ int* PopFront(int arr[], int& n)
 	for (int i = 0; i < n; i++) buffer[i] = arr[i + 1];
 	delete[] arr;
 	return buffer;
+}
+
+int** PushRowBack(int** arr, int& rows, const int cols)
+{
+	//1) Создаем буферный массив указателей нужного размера
+	int** buffer = new int* [rows + 1];
+	//2) Копируме адреса строк в новый массив
+	for (int i = 0; i < rows; i++) buffer[i] = arr[i];
+	//3) Удаляем исходный массив указателей
+	delete[] arr;
+	//4) Добавляем добавляемую строку
+	buffer[rows] = new int[cols] {};
+	//5)После добавления строки, количество строк увеличиваеся на 1
+	rows++;
+	//6) Возвращаем новый массив
+	return buffer;
+}
+void PushColBack(int** arr, const int rows, int& cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		//1) Создаем буферную строку нужного размера
+		int* buffer = new int[cols + 1]{};
+		//2) Копируем элементы из исходной строки в буферрую
+		for (int j = 0; j < cols; j++) buffer[j] = arr[i][j];
+		//3) Удаляем исходную строку
+		delete[] arr[i];
+		//4) Подменяем адрес исходной строки адресом новой строки
+		arr[i] = buffer;
+	}
+	cols++;
 }
