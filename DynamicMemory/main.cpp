@@ -4,8 +4,12 @@ using namespace std;
 using std::cin;
 using std::cout;
 
+int** Allocate(int rows, int cols);
+void Clear(int** arr, int rows);
+
 void FillRand(int arr[], const int n, int minRand = 0, int maxRand = 100);
 void FillRand(int** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
+
 void Print(int arr[], const int n);
 void Print(int** arr, const int rows, const int cols);
 
@@ -19,7 +23,6 @@ int* PopBack(int arr[], int& n);
 int* PopFront(int arr[], int& n);
 
 int** PushRowBack(int** arr, int& rows, const int cols);
-
 void PushColBack(int** arr, const int rows, int& cols);
 
 //#define DYNAMIC_MEMORY_1
@@ -73,30 +76,47 @@ void main()
 	cout << "Введите количество строк: "; cin >> rows;
 	cout << "Введите количество элементов строки: "; cin >> cols;
 
-
-
-	//1) Создаем массив указателей
-	int** arr = new int* [rows];
-	
-	
-	//2) Выделяем память под строки
-	for (int i = 0; i < rows; i++)
-	{
-		arr[i] = new int[cols];
-	}
+	int** arr = Allocate(rows, cols);
 
 	FillRand(arr, rows, cols);
 	Print(arr, rows, cols);
 
 	arr = PushRowBack(arr, rows, cols);
 	FillRand(arr[rows - 1], cols, 100, 1000);
+
+	cout << endl << "Добавили строку в конец" << endl;
 	Print(arr, rows, cols);
+
 	PushColBack(arr, rows, cols);
 	//Заполняем последний добавленный столбец случайными числами
 	for (int i = 0; i < rows; i++)
 		arr[i][cols - 1] = rand() % 100;
+
+	cout << endl << "Добавили столбик в конец" << endl;
 	Print(arr, rows, cols);
 
+	Clear(arr, rows);
+
+#endif // DYNAMIC_MEMORY_2
+
+}
+
+int** Allocate(int rows, int cols)
+{
+	//1) Создаем массив указателей
+	int **buffer = new int* [rows];
+
+
+	//2) Выделяем память под строки
+	for (int i = 0; i < rows; i++)
+	{
+		buffer[i] = new int[cols];
+	}
+	return buffer;
+}
+
+void Clear(int** arr, int rows)
+{
 	//1) Удаляются строки
 	for (int i = 0; i < rows; i++)
 	{
@@ -105,9 +125,6 @@ void main()
 
 	//2) Теперь можно удалить массив указателей
 	delete[] arr;
-
-#endif // DYNAMIC_MEMORY_2
-
 }
 
 void FillRand(int arr[], const int n, int minRand, int maxRand)
