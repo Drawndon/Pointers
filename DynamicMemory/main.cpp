@@ -5,7 +5,7 @@ using std::cin;
 using std::cout;
 
 int** Allocate(int rows, int cols);
-void Clear(int** arr, int rows);
+void Clear(int**& arr, int rows);
 
 void FillRand(int arr[], const int n, int minRand = 0, int maxRand = 100);
 void FillRand(int** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
@@ -13,11 +13,11 @@ void FillRand(int** arr, const int rows, const int cols, int minRand = 0, int ma
 void Print(int arr[], const int n);
 void Print(int** arr, const int rows, const int cols);
 
-int* PushBack(int arr[], int &n, int value);
-int* PushFront(int arr[], int &n, int value);
+int* PushBack(int arr[], int& n, int value);
+int* PushFront(int arr[], int& n, int value);
 
-int* Insert(int arr[], int &n, int value, int index);
-int** InsertRow(int** arr, int & rows, const int cols, int index);
+int* Insert(int arr[], int& n, int value, int index);
+int** InsertRow(int** arr, int& rows, const int cols, int index);
 void InsertCol(int** arr, int rows, int& cols, int index);
 
 int* Erase(int arr[], int& n, int index);
@@ -56,7 +56,7 @@ void main()
 	arr = Insert(arr, n, value, index);
 	cout << endl << "Добавили по индексу " << index << " значение " << value << endl;
 	Print(arr, n);
-		
+
 	arr = PushBack(arr, n, value);
 	cout << endl << "Добавили в конец " << value << endl;
 	Print(arr, n);
@@ -66,11 +66,11 @@ void main()
 	Print(arr, n);
 
 	arr = PopBack(arr, n);
-	cout << endl << "Удалили с конца "<< value << endl;
+	cout << endl << "Удалили с конца " << value << endl;
 	Print(arr, n);
 
 	arr = PopFront(arr, n);
-	cout << endl << "Удалили сначала "<< value << endl;
+	cout << endl << "Удалили сначала " << value << endl;
 	Print(arr, n);
 
 	arr = Erase(arr, n, index);
@@ -140,7 +140,7 @@ void main()
 
 	cout << endl << "Удалили столбец в начале" << endl;
 	Print(arr, rows, cols);
-	
+
 	int index;
 	cout << "Введите индекс добавляемой строки: "; cin >> index;
 
@@ -176,7 +176,7 @@ void main()
 int** Allocate(int rows, int cols)
 {
 	//1) Создаем массив указателей
-	int **buffer = new int* [rows];
+	int** buffer = new int* [rows];
 
 
 	//2) Выделяем память под строки
@@ -187,7 +187,7 @@ int** Allocate(int rows, int cols)
 	return buffer;
 }
 
-void Clear(int** arr, int rows)
+void Clear(int**& arr, int rows)
 {
 	//1) Удаляются строки
 	for (int i = 0; i < rows; i++)
@@ -197,6 +197,9 @@ void Clear(int** arr, int rows)
 
 	//2) Теперь можно удалить массив указателей
 	delete[] arr;
+
+	//3) Зануляем указатель на массив
+	arr = nullptr;
 }
 
 void FillRand(int arr[], const int n, int minRand, int maxRand)
@@ -222,7 +225,7 @@ void Print(int arr[], const int n)
 {
 	//cout << arr << endl;
 	//cout << *arr << endl;
-	
+
 	for (int i = 0; i < n; i++)
 	{
 		cout << arr[i] << "\t"; //Через оператор индексирования (subscript operator)
@@ -259,7 +262,7 @@ int* PushBack(int arr[], int& n, int value)
 int* PushFront(int arr[], int& n, int value)
 {
 	int* buffer = new int[n + 1];
-	
+
 	for (int i = 1; i < n + 1; i++)
 	{
 		buffer[i] = arr[i - 1];
@@ -283,24 +286,22 @@ int* Insert(int arr[], int& n, int value, int index)
 
 int** InsertRow(int** arr, int& rows, const int cols, int index)
 {
-	if (index == 0) return PushRowFront(arr, rows, cols);
-	else if (index > rows) return PushRowBack(arr, rows, cols);
-	else
+	if (index < 0 || index > rows)
 	{
-		int** buffer = new int* [rows + 1];
-
-		for (int i = 0; i < rows; i++) buffer[i < index ? i : i + 1] = arr[i];
-
-		delete[] arr;
-
-		buffer[index] = new int[cols] {};
-
-		rows++;
-
-		return buffer;
+		cout << "Error out of range exception" << endl;
+		return arr;
 	}
+	int** buffer = new int* [rows + 1];
 
+	for (int i = 0; i < rows; i++) buffer[i < index ? i : i + 1] = arr[i];
+	
+	delete[] arr;
 
+	buffer[index] = new int[cols] {};
+	
+	rows++;
+
+	return buffer;
 }
 
 void InsertCol(int** arr, int rows, int& cols, int index)
@@ -314,8 +315,9 @@ void InsertCol(int** arr, int rows, int& cols, int index)
 			int* buffer = new int[cols + 1]{};
 			for (int j = 0; j < cols; j++)
 			{
-				if (j < index) buffer[j] = arr[i][j];
-				else buffer[j + 1] = arr[i][j];
+				//if (j < index) buffer[j] = arr[i][j];
+				//else buffer[j + 1] = arr[i][j];
+				buffer[j < index ? j : j + 1] = arr[i][j];
 			}
 			delete[] arr[i];
 			arr[i] = buffer;
@@ -376,7 +378,7 @@ void EraseCol(int** arr, int rows, int& cols, int index)
 
 int* PopBack(int arr[], int& n)
 {
-	int *buffer = new int[--n];
+	int* buffer = new int[--n];
 	for (int i = 0; i < n; i++)
 		buffer[i] = arr[i];
 	delete[] arr;
