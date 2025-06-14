@@ -20,7 +20,7 @@ template <typename T> T* PushFront(T arr[], int& n, const T value);
 
 template <typename T> T* Insert(T arr[], int& n, T value, int index);
 template <typename T> T** InsertRow(T** arr, int& rows, const int cols, int index);
-void InsertCol(int** arr, int rows, int& cols, int index);
+template <typename T>void InsertCol(T** arr, int rows, int& cols, int index);
 
 template <typename T>T* Erase(T arr[], int& n, int index);
 template <typename T>T** EraseRow(T** arr, int& rows, const int index);
@@ -29,15 +29,15 @@ template <typename T>void EraseCol(T** arr, int rows, int& cols, int index);
 template <typename T> T* PopBack(T arr[], int& n);
 template <typename T> T* PopFront(T arr[], int& n);
 
-int** PopRowFront(int** arr, int& rows);
-int** PopRowBack(int** arr, int& rows);
-void PopColBack(int** arr, const int rows, int& cols);
-void PopColFront(int** arr, const int rows, int& cols);
+template <typename T>T** PopRowFront(T** arr, int& rows);
+template <typename T>T** PopRowBack(T** arr, int& rows);
+template <typename T>void PopColBack(T** arr, const int rows, int& cols);
+template <typename T>void PopColFront(T** arr, const int rows, int& cols);
 
 template <typename T>T** PushRowBack(T** arr, int& rows, const int cols);
 template <typename T> T** PushRowFront(T** arr, int& rows, const int cols);
 template <typename T>void PushColBack(T** arr, const int rows, int& cols);
-void PushColFront(int** arr, const int rows, int& cols);
+template <typename T>void PushColFront(T** arr, const int rows, int& cols);
 
 #define DATATYPE double //C style
 typedef int DataType; //C++ style
@@ -338,7 +338,7 @@ template <typename T> T** InsertRow(T** arr, int& rows, const int cols, int inde
 	return buffer;
 }
 
-void InsertCol(int** arr, int rows, int& cols, int index)
+template <typename T>void InsertCol(T** arr, int rows, int& cols, int index)
 {
 	if (index == 0) PushColFront(arr, rows, cols);
 	else if (index == cols) PushColBack(arr, rows, cols);
@@ -346,7 +346,7 @@ void InsertCol(int** arr, int rows, int& cols, int index)
 	{
 		for (int i = 0; i < rows; i++)
 		{
-			int* buffer = new int[cols + 1]{};
+			T* buffer = new T[cols + 1]{};
 			for (int j = 0; j < cols; j++)
 			{
 				//if (j < index) buffer[j] = arr[i][j];
@@ -397,7 +397,7 @@ template <typename T> void EraseCol(T** arr, int rows, int& cols, int index)
 	{
 		for (int i = 0; i < rows; ++i)
 		{
-			int* buffer = new T[cols - 1]{};
+			T* buffer = new T[cols - 1]{};
 			for (int j = 0; j < cols - 1; ++j)
 			{
 				if (j < index) buffer[j] = arr[i][j];
@@ -427,27 +427,27 @@ template <typename T> T* PopFront(T arr[], int& n)
 	return buffer;
 }
 
-int** PopRowFront(int** arr, int& rows)
+template <typename T> T** PopRowFront(T** arr, int& rows)
 {
-	int** buffer = new int* [--rows];
+	T** buffer = new T* [--rows];
 	for (int i = 0; i < rows; i++) buffer[i] = arr[i + 1];
 	delete[] arr;
 	return buffer;
 }
 
-int** PopRowBack(int** arr, int& rows)
+template <typename T> T** PopRowBack(T** arr, int& rows)
 {
-	int** buffer = new int* [--rows];
+	T** buffer = new T* [--rows];
 	for (int i = 0; i < rows; i++) buffer[i] = arr[i];
 	delete[] arr;
 	return buffer;
 }
 
-void PopColBack(int** arr, const int rows, int& cols)
+template <typename T>void PopColBack(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		int* buffer = new int[cols - 1]{};
+		T* buffer = new T[cols - 1]{};
 		for (int j = 0; j < cols - 1; j++) buffer[j] = arr[i][j];
 		delete[] arr[i];
 		arr[i] = buffer;
@@ -456,11 +456,11 @@ void PopColBack(int** arr, const int rows, int& cols)
 
 }
 
-void PopColFront(int** arr, const int rows, int& cols)
+template <typename T>void PopColFront(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		int* buffer = new int[cols - 1]{};
+		T* buffer = new T[cols - 1]{};
 		for (int j = 0; j < cols - 1; j++) buffer[j] = arr[i][j + 1];
 		delete[] arr[i];
 		arr[i] = buffer;
@@ -513,11 +513,11 @@ template <typename T>void PushColBack(T** arr, const int rows, int& cols)
 	cols++;
 }
 
-void PushColFront(int** arr, const int rows, int& cols)
+template <typename T>void PushColFront(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		int* buffer = new int[cols + 1]{};
+		T* buffer = new T[cols + 1]{};
 		for (int j = 0; j < cols; j++) buffer[j + 1] = arr[i][j];
 		delete[] arr[i];
 		arr[i] = buffer;
