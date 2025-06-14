@@ -325,7 +325,7 @@ template <typename T> T** InsertRow(T** arr, int& rows, const int cols, int inde
 		cout << "Error out of range exception" << endl;
 		return arr;
 	}
-	T** buffer = new T* [rows + 1];
+	/*T** buffer = new T * [rows + 1];
 
 	for (int i = 0; i < rows; i++) buffer[i < index ? i : i + 1] = arr[i];
 	
@@ -335,15 +335,12 @@ template <typename T> T** InsertRow(T** arr, int& rows, const int cols, int inde
 	
 	rows++;
 
-	return buffer;
+	return buffer;*/
+	return Insert(arr, rows, new T[cols]{}, index);
 }
 
 template <typename T>void InsertCol(T** arr, int rows, int& cols, int index)
 {
-	if (index == 0) PushColFront(arr, rows, cols);
-	else if (index == cols) PushColBack(arr, rows, cols);
-	else
-	{
 		for (int i = 0; i < rows; i++)
 		{
 			T* buffer = new T[cols + 1]{};
@@ -357,8 +354,6 @@ template <typename T>void InsertCol(T** arr, int rows, int& cols, int index)
 			arr[i] = buffer;
 		}
 		cols++;
-	}
-
 }
 
 template <typename T>T* Erase(T arr[], int& n, int index)
@@ -372,21 +367,23 @@ template <typename T>T* Erase(T arr[], int& n, int index)
 
 template <typename T>T** EraseRow(T** arr, int& rows, const int index)
 {
-	if (index == 0) return PopRowFront(arr, rows);
-	else if (index == rows - 1) return PopRowBack(arr, rows);
-	else
+	if (index < 0 || index > rows - 1)
 	{
-		T** buffer = new T* [--rows];
+			cout << "Error out of range exception" << endl;
+			return arr;
+		}
+	delete[] arr[index];
+	/*T** buffer = new T * [--rows];
 
 		for (int i = 0; i < rows; ++i)
 		{
 			if (i < index) buffer[i] = arr[i];
 			else buffer[i] = arr[i + 1];
 		}
-		delete[] arr[index];
+
 		delete[] arr;
-		return buffer;
-	}
+		return buffer;*/
+	return Erase(arr, rows, index);
 }
 
 template <typename T> void EraseCol(T** arr, int rows, int& cols, int index)
@@ -429,18 +426,20 @@ template <typename T> T* PopFront(T arr[], int& n)
 
 template <typename T> T** PopRowFront(T** arr, int& rows)
 {
-	T** buffer = new T* [--rows];
+	/*T** buffer = new T * [--rows];
 	for (int i = 0; i < rows; i++) buffer[i] = arr[i + 1];
 	delete[] arr;
-	return buffer;
+	return buffer;*/
+	return PopFront(arr, rows);
 }
 
 template <typename T> T** PopRowBack(T** arr, int& rows)
 {
-	T** buffer = new T* [--rows];
+	/*T** buffer = new T * [--rows];
 	for (int i = 0; i < rows; i++) buffer[i] = arr[i];
 	delete[] arr;
-	return buffer;
+	return buffer;*/
+	return PopBack(arr, rows);
 }
 
 template <typename T>void PopColBack(T** arr, const int rows, int& cols)
