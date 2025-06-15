@@ -343,7 +343,7 @@ template <typename T>void InsertCol(T** arr, int rows, int& cols, int index)
 {
 		for (int i = 0; i < rows; i++)
 		{
-			T* buffer = new T[cols + 1]{};
+			/*T* buffer = new T[cols + 1]{};
 			for (int j = 0; j < cols; j++)
 			{
 				//if (j < index) buffer[j] = arr[i][j];
@@ -351,7 +351,10 @@ template <typename T>void InsertCol(T** arr, int rows, int& cols, int index)
 				buffer[j < index ? j : j + 1] = arr[i][j];
 			}
 			delete[] arr[i];
-			arr[i] = buffer;
+			arr[i] = buffer;*/
+			arr[i] = Insert(arr[i], cols, 1, index);
+			cols--;
+			
 		}
 		cols++;
 }
@@ -388,23 +391,21 @@ template <typename T>T** EraseRow(T** arr, int& rows, const int index)
 
 template <typename T> void EraseCol(T** arr, int rows, int& cols, int index)
 {
-	if (index == 0) PopColFront(arr, rows, cols);
-	else if (index == cols - 1) PopColBack(arr, rows, cols);
-	else
-	{
+
 		for (int i = 0; i < rows; ++i)
 		{
-			T* buffer = new T[cols - 1]{};
+			/*T* buffer = new T[cols - 1]{};
 			for (int j = 0; j < cols - 1; ++j)
 			{
 				if (j < index) buffer[j] = arr[i][j];
 				else buffer[j] = arr[i][j + 1];
 			}
 			delete[] arr[i];
-			arr[i] = buffer;
+			arr[i] = buffer;*/
+			arr[i] = Erase(arr[i], cols, index);
+			cols++;
 		}
 		cols--;
-	}
 }
 
 template <typename T> T* PopBack(T arr[], int& n)
@@ -446,10 +447,12 @@ template <typename T>void PopColBack(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		T* buffer = new T[cols - 1]{};
+		/*T* buffer = new T[cols - 1]{};
 		for (int j = 0; j < cols - 1; j++) buffer[j] = arr[i][j];
 		delete[] arr[i];
-		arr[i] = buffer;
+		arr[i] = buffer;*/
+		arr[i] = PopBack(arr[i], cols);
+		cols++;
 	}
 	--cols;
 
@@ -459,10 +462,12 @@ template <typename T>void PopColFront(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		T* buffer = new T[cols - 1]{};
+		/*T* buffer = new T[cols - 1]{};
 		for (int j = 0; j < cols - 1; j++) buffer[j] = arr[i][j + 1];
 		delete[] arr[i];
-		arr[i] = buffer;
+		arr[i] = buffer;*/
+		arr[i] = PopBack(arr[i], cols);
+		cols++;
 	}
 
 	--cols;
@@ -471,7 +476,7 @@ template <typename T>void PopColFront(T** arr, const int rows, int& cols)
 
 template <typename T> T** PushRowBack(T** arr, int& rows, const int cols)
 {
-	//1) Создаем буферный массив указателей нужного размера
+	/*//1) Создаем буферный массив указателей нужного размера
 	T** buffer = new T* [rows + 1];
 	//2) Копируем адреса строк в новый массив
 	for (int i = 0; i < rows; i++) buffer[i] = arr[i];
@@ -482,17 +487,19 @@ template <typename T> T** PushRowBack(T** arr, int& rows, const int cols)
 	//5)После добавления строки, количество строк увеличиваеся на 1
 	rows++;
 	//6) Возвращаем новый массив
-	return buffer;
+	return buffer;*/
+	return PushBack(arr, rows, new T[cols]{});
 }
 
 template <typename T>T** PushRowFront(T** arr, int& rows, const int cols)
 {
-	T** buffer = new T* [rows + 1];
+	/*T** buffer = new T * [rows + 1];
 	for (int i = 0; i < rows; i++) buffer[i + 1] = arr[i];
 	delete[] arr;
 	buffer[0] = new T[cols] {};
 	rows++;
-	return buffer;
+	return buffer;*/
+	return PushFront(arr, rows, new T[cols]{});
 
 }
 
@@ -500,14 +507,16 @@ template <typename T>void PushColBack(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		//1) Создаем буферную строку нужного размера
+		/*//1) Создаем буферную строку нужного размера
 		T* buffer = new T[cols + 1]{};
 		//2) Копируем элементы из исходной строки в буферрую
 		for (int j = 0; j < cols; j++) buffer[j] = arr[i][j];
 		//3) Удаляем исходную строку
 		delete[] arr[i];
 		//4) Подменяем адрес исходной строки адресом новой строки
-		arr[i] = buffer;
+		arr[i] = buffer;*/
+		arr[i] = PushBack(arr[i], cols, 1);
+		cols--;
 	}
 	cols++;
 }
@@ -516,10 +525,12 @@ template <typename T>void PushColFront(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		T* buffer = new T[cols + 1]{};
+		/*/T* buffer = new T[cols + 1]{};
 		for (int j = 0; j < cols; j++) buffer[j + 1] = arr[i][j];
 		delete[] arr[i];
-		arr[i] = buffer;
+		arr[i] = buffer;*/
+		arr[i] = PushFront(arr[i], cols, 1);
+		cols--;
 	}
 	cols++;
 }
