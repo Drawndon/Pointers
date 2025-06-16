@@ -7,10 +7,10 @@ using std::cout;
 template<typename T>T** Allocate(int rows, int cols);
 template<typename T>void Clear(T**& arr, int rows);
 
-void FillRand(int arr[], const int n, int minRand = 0, int maxRand = 100);
-void FillRand(double arr[], const int n, int minRand = 0, int maxRand = 100);
-void FillRand(int** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
-void FillRand(double** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
+int* FillRand(int arr[], const int n, int minRand = 0, int maxRand = 100);
+double* FillRand(double arr[], const int n, int minRand = 0, int maxRand = 100);
+int** FillRand(int** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
+double** FillRand(double** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
 
 template <typename T> void Print(T arr[], const int n);
 template <typename T>void Print(T** arr, const int rows, const int cols);
@@ -209,16 +209,17 @@ template<typename T>void Clear(T**& arr, int rows)
 	arr = nullptr;
 }
 
-void FillRand(int arr[], const int n, int minRand, int maxRand)
+int* FillRand(int arr[], const int n, int minRand, int maxRand)
 {
 	for (int i = 0; i < n; i++)
 	{
 		*(arr + i) = rand() % (maxRand - minRand) + minRand; //Через арифметику указателей и оператор разыменования
 	}
+	return arr;
 
 }
 
-void FillRand(double arr[], const int n, int minRand, int maxRand)
+double* FillRand(double arr[], const int n, int minRand, int maxRand)
 {
 	minRand *= 100;
 	maxRand *= 100;
@@ -227,11 +228,12 @@ void FillRand(double arr[], const int n, int minRand, int maxRand)
 		*(arr + i) = rand() % (maxRand - minRand) + minRand; //Через арифметику указателей и оператор разыменования
 		arr[i] /= 100;
 	}
+	return arr;
 
 }
 
 
-void FillRand(int** arr, const int rows, const int cols, int minRand, int maxRand)
+int** FillRand(int** arr, const int rows, const int cols, int minRand, int maxRand)
 {
 	for (int i = 0; i < rows; i++)
 	{
@@ -240,9 +242,10 @@ void FillRand(int** arr, const int rows, const int cols, int minRand, int maxRan
 			arr[i][j] = rand() % (maxRand - minRand) + minRand;
 		}
 	}
+	return arr;
 }
 
-void FillRand(double** arr, const int rows, const int cols, int minRand, int maxRand)
+double** FillRand(double** arr, const int rows, const int cols, int minRand, int maxRand)
 {
 	minRand *= 100;
 	maxRand *= 100;
@@ -253,6 +256,7 @@ void FillRand(double** arr, const int rows, const int cols, int minRand, int max
 			arr[i][j] = double(rand() % (maxRand - minRand) + minRand)/ 100;
 		}
 	}
+	return arr;
 }
 
 template <typename T>void Print(T arr[], const int n)
@@ -297,9 +301,9 @@ template <typename T> T* PushFront(T arr[], int& n, const T value)
 {
 	T* buffer = new T[n + 1];
 
-	for (int i = 1; i < n + 1; i++)
+	for (int i = 0; i < n; i++)
 	{
-		buffer[i] = arr[i - 1];
+		buffer[i + 1] = arr[i];
 	}
 	delete[] arr;
 	buffer[0] = value;
@@ -431,6 +435,7 @@ template <typename T> T** PopRowFront(T** arr, int& rows)
 	for (int i = 0; i < rows; i++) buffer[i] = arr[i + 1];
 	delete[] arr;
 	return buffer;*/
+	delete[] arr[0];
 	return PopFront(arr, rows);
 }
 
@@ -440,6 +445,7 @@ template <typename T> T** PopRowBack(T** arr, int& rows)
 	for (int i = 0; i < rows; i++) buffer[i] = arr[i];
 	delete[] arr;
 	return buffer;*/
+	delete[] arr[rows - 1];
 	return PopBack(arr, rows);
 }
 
@@ -515,7 +521,7 @@ template <typename T>void PushColBack(T** arr, const int rows, int& cols)
 		delete[] arr[i];
 		//4) Подменяем адрес исходной строки адресом новой строки
 		arr[i] = buffer;*/
-		arr[i] = PushBack(arr[i], cols, 1);
+		arr[i] = PushBack(arr[i], cols, T()); //T() - значение по умолчанию для шаблонного типа
 		cols--;
 	}
 	cols++;
